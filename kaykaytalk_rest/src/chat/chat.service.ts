@@ -1,26 +1,30 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateChatDto } from './dto/create-chat.dto';
-import { UpdateChatDto } from './dto/update-chat.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Chat } from './entities/chat.entity';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class ChatService {
-  create(createChatDto: CreateChatDto) {
-    return 'This action adds a new chat';
+  constructor(
+    @InjectModel(Chat.name) private readonly ChatModel: Model<Chat>,
+  ) {}
+
+  async createChat(createChatDto: CreateChatDto) {
+    try {
+      const saveChat = new this.ChatModel(createChatDto);
+      return saveChat.save();
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 
-  findAll() {
-    return `This action returns all chat`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} chat`;
-  }
-
-  update(id: number, updateChatDto: UpdateChatDto) {
-    return `This action updates a #${id} chat`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} chat`;
+  async findChatByUserId(userIds: number[]) {
+    try {
+      const chats = await this.ChatModel.find({ userId: { $in: userIds } });
+      return chats;
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 }
