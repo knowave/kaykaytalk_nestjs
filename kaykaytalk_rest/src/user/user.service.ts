@@ -33,6 +33,7 @@ export class UserService {
       exist.username = updateUserDto.username;
       exist.password = await bcrypt.hash(updateUserDto.password, 10);
 
+      await queryRunner.manager.save(User, exist);
       await queryRunner.commitTransaction();
       return exist;
     } catch (err) {
