@@ -19,9 +19,9 @@ export class ChatService {
     }
   }
 
-  async getAllChatByUserId(userId: number) {
+  async getAllChatByUserId(userId: number, roomId: number) {
     try {
-      const chats = await this.ChatModel.find({ userId });
+      const chats = await this.ChatModel.find({ userId, roomId });
       return chats;
     } catch (error) {
       throw new InternalServerErrorException();
