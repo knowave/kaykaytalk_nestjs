@@ -1,26 +1,45 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { UserRepository } from './user.repository';
+import { User } from './entities/user.entity';
+import * as bcrypt from 'bcrypt';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(
+    @InjectRepository(UserRepository)
+    private readonly userRepository: UserRepository,
+    private readonly dataSource: DataSource,
+  ) {}
+
+  async getUserById(userId: number): Promise<User> {
+    return await this.userRepository.getUserById(userId);
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async createUser(createUserDto: CreateUserDto): Promise<User> {
+    return await this.userRepository.createUser(createUserDto);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
+  async updateUser(updateUserDto: UpdateUserDto, user: User): Promise<User> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const exist = await this.getUserById(user.id);
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+      exist.username = updateUserDto.username;
+      exist.password = await bcrypt.hash(updateUserDto.password, 10);
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+      await queryRunner.commitTransaction();
+      return exist;
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw new InternalServerErrorException();
+    } finally {
+      await queryRunner.release();
+    }
   }
 }
