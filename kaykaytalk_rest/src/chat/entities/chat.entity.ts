@@ -12,6 +12,9 @@ export class Chat {
   roomId: number;
 
   @Prop()
+  messageId: number;
+
+  @Prop()
   username: string;
 
   @Prop()
