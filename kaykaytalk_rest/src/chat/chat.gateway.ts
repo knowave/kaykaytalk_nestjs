@@ -29,7 +29,9 @@ export class ChatGateway {
     payload: { userId: number; roomId: number },
   ) {
     const { userId, roomId } = payload;
-    return this.chatService.getAllChatByUserId(userId, roomId);
+    const messages = this.chatService.getAllChatByUserId(userId, roomId);
+
+    return this.server.emit('receiveMessages', messages);
   }
 
   @SubscribeMessage('updateChat')
