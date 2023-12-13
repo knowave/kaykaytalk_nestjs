@@ -32,18 +32,18 @@ export class ChatGateway {
     return this.chatService.getAllChatByUserId(userId, roomId);
   }
 
-  // @SubscribeMessage('findOneChat')
-  // findOne(@MessageBody() id: number) {
-  //   return this.chatService.findOne(id);
-  // }
-
   @SubscribeMessage('updateChat')
-  update(
+  async update(
     payload: { userId: number },
     @MessageBody() updateChatDto: UpdateChatDto,
   ) {
     const { userId } = payload;
-    return this.chatService.updateChatMessage(userId, updateChatDto);
+    const updateMessage = await this.chatService.updateChatMessage(
+      userId,
+      updateChatDto,
+    );
+
+    return this.server.emit('updateMessage', updateMessage);
   }
 
   // @SubscribeMessage('removeChat')
