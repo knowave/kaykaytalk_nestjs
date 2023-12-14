@@ -7,6 +7,7 @@ import { MongoDbModule } from './mongo-db/mongo-db.module';
 import { MysqlModule } from './mysql/mysql.module';
 import { UserModule } from './user/user.module';
 import { ChatModule } from './chat/chat.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ChatModule } from './chat/chat.module';
     MysqlModule,
     UserModule,
     ChatModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService, ChatGateway],
