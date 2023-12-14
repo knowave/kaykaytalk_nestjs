@@ -9,5 +9,6 @@ import { Chat, ChatSchema } from './entities/chat.entity';
     MongooseModule.forFeature([{ name: Chat.name, schema: ChatSchema }]),
   ],
   providers: [ChatGateway, ChatService],
+  exports: [ChatService],
 })
 export class ChatModule {}
