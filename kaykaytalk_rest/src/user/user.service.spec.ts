@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserService } from './user.service';
 import { UserRepository } from './user.repository';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
+import { UserService } from './user.service';
 
 const mockRepository = {
   createQueryBuilder: jest.fn(),
