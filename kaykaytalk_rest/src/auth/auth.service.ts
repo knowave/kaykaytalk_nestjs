@@ -1,4 +1,9 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -44,6 +49,7 @@ export class AuthService {
 
       const token = this.jwtService.sign(payload, {
         secret: this.configService.get('JWT_SECRET'),
+        expiresIn: '20700m',
       });
 
       const tokenVerify = await this.tokenValidate(token);
@@ -57,6 +63,50 @@ export class AuthService {
       user.refreshToken = refreshToken;
       await this.userRepository.save(user);
       return { refreshToken, tokenExp };
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async reissueRefreshToken(user: User) {
+    try {
+      const existUser = await this.userService.getUserById(user.id);
+
+      if (existUser) throw new NotFoundException();
+
+      const payload = {
+        type: 'refreshToken',
+        id: existUser.id,
+        username: existUser.username,
+      };
+
+      const token = this.jwtService.sign(payload, {
+        secret: this.configService.get('JWT_SECRET'),
+        expiresIn: '20700m',
+      });
+
+      const tokenVerify = await this.tokenValidate(token);
+      const tokenExp = new Date(tokenVerify['exp'] * 1000);
+      const currentTime = new Date();
+      const timeRemaining = Math.floor(
+        (tokenExp.getTime() - currentTime.getTime()) / 1000 / 60 / 60,
+      );
+
+      if (timeRemaining > 10) throw new BadRequestException();
+
+      const refreshToken = CryptoJS.AES.encrypt(
+        JSON.stringify(token),
+        this.configService.get('AES_KEY'),
+      ).toString();
+
+      existUser.refreshToken = refreshToken;
+      await this.userRepository.save(existUser);
+
+      const accessToken = await this.createAccessToken(existUser);
+      return {
+        accessToken: accessToken,
+        refreshToken: { refreshToken, tokenExp },
+      };
     } catch (error) {
       throw new InternalServerErrorException();
     }
