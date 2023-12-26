@@ -10,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -19,6 +20,21 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
+
+  async validateUser(email: string, hashedPassword: string) {
+    try {
+      const user = await this.userService.getUserByEmail(email);
+
+      const password = await bcrypt.compare(hashedPassword, user.password);
+
+      if (password) {
+        const { password, ...result } = user;
+        return result;
+      }
+    } catch (err) {
+      throw new InternalServerErrorException(err);
+    }
+  }
 
   async createAccessToken(user: User): Promise<string> {
     try {
