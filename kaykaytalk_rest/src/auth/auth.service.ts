@@ -22,17 +22,15 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, hashedPassword: string) {
-    try {
-      const user = await this.userService.getUserByEmail(email);
+    const user = await this.userService.getUserByEmail(email);
 
-      const password = await bcrypt.compare(hashedPassword, user.password);
+    const password = await bcrypt.compare(hashedPassword, user.password);
 
-      if (password) {
-        const { password, ...result } = user;
-        return result;
-      }
-    } catch (err) {
-      throw new InternalServerErrorException(err);
+    if (password) {
+      const { password, ...result } = user;
+      return result;
+    } else {
+      throw new BadRequestException();
     }
   }
 
