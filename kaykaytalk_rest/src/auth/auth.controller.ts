@@ -15,4 +15,10 @@ export class AuthController {
 
     return { accessToken, refreshToken };
   }
+
+  @UseGuards(LocalAuthGuard)
+  @Post('logout')
+  async logout(@User() user) {
+    await this.authService.removeRefreshToken(user);
+  }
 }

@@ -131,4 +131,13 @@ export class AuthService {
       secret: this.configService.get('JWT_SECRET'),
     });
   }
+
+  async removeRefreshToken(user: User) {
+    try {
+      user.refreshToken = null;
+      await this.userRepository.save(user);
+    } catch (err) {
+      throw new InternalServerErrorException(err);
+    }
+  }
 }
