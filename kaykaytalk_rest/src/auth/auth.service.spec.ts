@@ -18,6 +18,15 @@ const mockUserRepository = () => ({
   save: jest.fn(),
 });
 
+const mockJwtService = () => ({
+  sign: jest.fn(),
+  verify: jest.fn(),
+});
+
+const mockConfigService = () => ({
+  get: jest.fn(),
+});
+
 type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 
 describe('AuthService', () => {
@@ -31,8 +40,14 @@ describe('AuthService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
-        JwtService,
-        ConfigService,
+        {
+          provide: JwtService,
+          useValue: mockJwtService(),
+        },
+        {
+          provide: ConfigService,
+          useValue: mockConfigService(),
+        },
         {
           provide: UserService,
           useValue: mockUserService(),
@@ -48,6 +63,7 @@ describe('AuthService', () => {
     userService = module.get<UserService>(UserService);
     userRepository = module.get<MockRepository<User>>(getRepositoryToken(User));
     jwtService = module.get<JwtService>(JwtService);
+    configService = module.get<ConfigService>(ConfigService);
   });
 
   afterEach(() => {
@@ -98,6 +114,49 @@ describe('AuthService', () => {
       } catch (error) {
         expect(error).toBeInstanceOf(BadRequestException);
       }
+    });
+  });
+
+  describe('createAccessToken', () => {
+    it('User가 존재하면 AccessToken 발급에 성공한다.', async () => {
+      const user: User = {
+        id: 2,
+        email: 'test@test.com',
+        username: 'tester',
+        password: 'aaa1',
+      };
+
+      jest.spyOn(jwtService, 'sign').mockReturnValue('mocking_access_token');
+      jest.spyOn(configService, 'get').mockReturnValue('JWT_SECRET');
+
+      const result = await authService.createAccessToken(user);
+
+      expect(result).toEqual('mocking_access_token');
+    });
+  });
+
+  describe('createRefreshToken', () => {
+    it('User가 존재하면 RefreshToken 발급에 성공한다.', async () => {
+      const user: User = {
+        id: 2,
+        email: 'test@test.com',
+        username: 'tester',
+        password: 'aaa1',
+      };
+
+      jest.spyOn(jwtService, 'sign').mockReturnValue('mocking_refresh_token');
+      jest.spyOn(jwtService, 'verify').mockReturnValue({
+        type: 'refreshToken',
+        id: user.id,
+        username: user.username,
+      });
+      jest.spyOn(configService, 'get').mockReturnValue('JWT_SECRET');
+      jest.spyOn(configService, 'get').mockReturnValue('AES_KEY');
+      jest.spyOn(userRepository, 'save').mockResolvedValue(user);
+
+      const result = await authService.createRefreshToken(user);
+
+      console.log(result);
     });
   });
 });
