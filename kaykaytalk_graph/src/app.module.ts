@@ -6,6 +6,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ConfigModule } from '@nestjs/config';
 import { Context } from 'apollo-server-core';
 import { UserModule } from './user/user.module';
+import { MysqlModule } from './mysql/mysql.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { UserModule } from './user/user.module';
       context: ({ req, res }) => ({ req, res }),
     }),
     UserModule,
+    MysqlModule,
   ],
   controllers: [AppController],
   providers: [AppService],
