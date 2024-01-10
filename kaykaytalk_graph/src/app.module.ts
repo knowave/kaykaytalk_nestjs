@@ -6,7 +6,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ConfigModule } from '@nestjs/config';
 import { Context } from 'apollo-server-core';
 import { UserModule } from './user/user.module';
-import { MysqlModule } from './mysql/mysql.module';
+import { MikroOrmModule } from '@mikro-orm/nestjs';
 
 @Module({
   imports: [
@@ -29,8 +29,8 @@ import { MysqlModule } from './mysql/mysql.module';
       },
       context: ({ req, res }) => ({ req, res }),
     }),
+    MikroOrmModule.forRoot(),
     UserModule,
-    MysqlModule,
   ],
   controllers: [AppController],
   providers: [AppService],
