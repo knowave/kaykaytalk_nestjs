@@ -17,11 +17,13 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "create-schema": "mikro-orm schema:create --run"
   },
   "dependencies": {
     "@apollo/server": "^4.10.0",
     "@mikro-orm/core": "^6.0.2",
+    "@mikro-orm/knex": "^6.0.2",
     "@mikro-orm/mysql": "^6.0.2",
     "@mikro-orm/nestjs": "^5.2.3",
     "@nestjs/apollo": "^12.0.11",
@@ -39,6 +41,8 @@
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
+    "@mikro-orm/cli": "^6.0.2",
+    "@mikro-orm/entity-generator": "^6.0.2",
     "@nestjs/cli": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/testing": "^10.0.0",
