@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { Context } from 'apollo-server-core';
 import { UserModule } from './user/user.module';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
+import { MysqlModule } from './config/mysql.module';
 
 @Module({
   imports: [
@@ -29,7 +30,7 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
       },
       context: ({ req, res }) => ({ req, res }),
     }),
-    MikroOrmModule.forRoot(),
+    MysqlModule,
     UserModule,
   ],
   controllers: [AppController],
