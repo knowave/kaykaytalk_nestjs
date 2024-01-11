@@ -6,10 +6,7 @@ import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectRepository(UserRepository)
-    private readonly userRepository: UserRepository,
-  ) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
   async getUserById({ userId }: GetUserByIdInput): Promise<GetUserByIdOutput> {
     const user = await this.userRepository.getUserById(userId);

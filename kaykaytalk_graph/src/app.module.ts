@@ -1,13 +1,11 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ConfigModule } from '@nestjs/config';
 import { Context } from 'apollo-server-core';
 import { UserModule } from './user/user.module';
 import { MysqlModule } from './config/mysql/mysql.module';
-import GraphQlJSON from 'graphql-type-json';
+import GraphQLJSON from 'graphql-type-json';
 
 @Module({
   imports: [
@@ -17,7 +15,7 @@ import GraphQlJSON from 'graphql-type-json';
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      resolvers: { JSON: GraphQlJSON },
+      resolvers: { JSON: GraphQLJSON },
       playground: true,
       autoSchemaFile: true,
       installSubscriptionHandlers: true,
@@ -25,7 +23,7 @@ import GraphQlJSON from 'graphql-type-json';
         'graphql-ws': {
           onConnect: (context: Context<any>) => {
             const { connectionParams, extra } = context;
-            extra.token = connectionParams['jwt'];
+            extra.token = connectionParams['accessToken'];
           },
         },
       },
@@ -34,7 +32,5 @@ import GraphQlJSON from 'graphql-type-json';
     MysqlModule,
     UserModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

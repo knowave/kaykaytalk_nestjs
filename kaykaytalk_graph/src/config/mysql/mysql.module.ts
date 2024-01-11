@@ -15,7 +15,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         user: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         dbName: configService.get('DB_NAME'),
-        autoLoadEntities: true,
+        // autoLoadEntities: true,
         schemaGenerator: {
           disableForeignKeys: true,
           createForeignKeyConstraints: true,
