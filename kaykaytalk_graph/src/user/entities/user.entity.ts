@@ -7,18 +7,18 @@ import { BaseEntity } from '../../common/base.entity';
 @Entity()
 export class User extends BaseEntity {
   @Field(() => String)
-  @Property({ columnType: 'varchar', comment: '사용자 이메일 주소' })
+  @Property()
   email: string;
 
   @Field(() => String)
-  @Property({ columnType: 'varchar', comment: '사용자 이름' })
+  @Property()
   username: string;
 
   @Field(() => String)
-  @Property({ columnType: 'varchar', comment: '사용자 비밀번호' })
+  @Property()
   password: string;
 
   @Field(() => String)
-  @Property({ columnType: 'varchar', comment: 'jwt refresh token' })
+  @Property()
   refreshToken: string;
 }
