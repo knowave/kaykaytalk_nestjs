@@ -1,8 +1,6 @@
 import { Options } from '@mikro-orm/core';
 import { MySqlDriver } from '@mikro-orm/mysql';
-import * as path from 'path';
 import dotenv from 'dotenv';
-
 dotenv.config();
 
 export const MikroOrmConfig: Options = {
@@ -12,11 +10,16 @@ export const MikroOrmConfig: Options = {
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   dbName: process.env.DB_NAME,
+  schemaGenerator: {
+    disableForeignKeys: true,
+    createForeignKeyConstraints: true,
+    ignoreSchema: [],
+  },
   allowGlobalContext: true,
-  entities: [path.join(__dirname, '../**/entities/**/*.entity.{ts,js}')],
-  entitiesTs: [path.join('../**/entities/**/*.entity.{ts,js}')],
+  entities: ['./**/entities/**/*.entity.{ts,js}'],
+  baseDir: __dirname,
   migrations: {
-    path: path.join(__dirname, './migrations/*.ts'),
+    path: './config/mysql/migrations/*.ts',
     tableName: 'migrations',
     transactional: true,
   },
