@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { Context } from 'apollo-server-core';
 import { UserModule } from './user/user.module';
 import { MysqlModule } from './config/mysql/mysql.module';
+import GraphQlJSON from 'graphql-type-json';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { MysqlModule } from './config/mysql/mysql.module';
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
+      resolvers: { JSON: GraphQlJSON },
       playground: true,
       autoSchemaFile: true,
       installSubscriptionHandlers: true,
