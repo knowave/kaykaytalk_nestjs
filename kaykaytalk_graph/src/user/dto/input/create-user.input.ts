@@ -1,4 +1,4 @@
-import { InputType, PartialType, ObjectType } from '@nestjs/graphql';
+import { InputType, PartialType } from '@nestjs/graphql';
 import { User } from '../../entities/user.entity';
 
 @InputType()
