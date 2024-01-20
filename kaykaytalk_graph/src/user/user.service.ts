@@ -27,8 +27,9 @@ export class UserService {
     password,
   }: CreateUserInput): Promise<CreateUserOutput> {
     const em = this.entityManager.fork();
-    await em.begin();
+    await this.userRepository.getUserByEmail(email);
     try {
+      await em.begin();
       const createUser = em.create(User, {
         email,
         username,
