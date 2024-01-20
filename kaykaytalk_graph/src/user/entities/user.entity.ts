@@ -6,19 +6,19 @@ import { BaseEntity } from '../../common/base.entity';
 @ObjectType()
 @Entity()
 export class User extends BaseEntity {
-  @Field(() => String)
-  @Property()
+  @Field(() => String, { nullable: true })
+  @Property({ nullable: true })
   email: string;
 
-  @Field(() => String)
-  @Property()
+  @Field(() => String, { nullable: true })
+  @Property({ nullable: true })
   username: string;
 
-  @Field(() => String)
-  @Property()
+  @Field(() => String, { nullable: true })
+  @Property({ nullable: true })
   password: string;
 
-  @Field(() => String)
-  @Property()
+  @Field(() => String, { nullable: true })
+  @Property({ nullable: true })
   refreshToken: string;
 }
