@@ -7,15 +7,27 @@ export class BaseEntity {
   @PrimaryKey()
   id: number;
 
-  @Field(() => Date)
-  @Property({ columnType: 'datetime' })
+  @Field(() => Date, { nullable: true })
+  @Property({
+    columnType: 'datetime',
+    onCreate: () => new Date(),
+    nullable: true,
+  })
   createdAt: Date;
 
-  @Field(() => Date)
-  @Property({ columnType: 'datetime' })
+  @Field(() => Date, { nullable: true })
+  @Property({
+    columnType: 'datetime',
+    onUpdate: () => new Date(),
+    nullable: true,
+  })
   updatedAt: Date;
 
-  @Field(() => Date)
-  @Property({ columnType: 'datetime' })
+  @Field(() => Date, { nullable: true })
+  @Property({
+    columnType: 'datetime',
+    onUpdate: () => new Date(),
+    nullable: true,
+  })
   deletedAt: Date;
 }
