@@ -15,7 +15,7 @@ import GraphQLJSON from 'graphql-type-json';
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      resolvers: { JSON: GraphQLJSON },
+      // resolvers: { JSON: GraphQLJSON },
       playground: true,
       autoSchemaFile: true,
       installSubscriptionHandlers: true,
