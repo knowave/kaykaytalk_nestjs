@@ -7,6 +7,8 @@ import { User } from './entities/user.entity';
 import { CreateUserInput } from './dto/input/create-user.input';
 import { CreateUserOutput } from './dto/output/create-user.output';
 import * as bcrypt from 'bcrypt';
+import { UpdateUserInput } from './dto/input/update-user.input';
+import { UpdateUserOutput } from './dto/output/update-user.output';
 
 @Injectable()
 export class UserService {
@@ -39,6 +41,29 @@ export class UserService {
       });
 
       em.persist(createUser);
+      await em.commit();
+      return { ok: true };
+    } catch (err) {
+      await em.rollback();
+      throw new InternalServerErrorException(`Server Error: ${err.stack}`);
+    }
+  }
+
+  async updateUser(
+    { username, password }: UpdateUserInput,
+    user: User,
+  ): Promise<UpdateUserOutput> {
+    const em = this.entityManager.fork();
+    try {
+      await em.begin();
+
+      if (username) user.username = username;
+      if (password) {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        user.password = hashedPassword;
+      }
+
+      em.persist(user);
       await em.commit();
       return { ok: true };
     } catch (err) {
