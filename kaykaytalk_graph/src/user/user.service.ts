@@ -19,8 +19,6 @@ export class UserService {
 
   async getUserById({ userId }: GetUserByIdInput): Promise<GetUserByIdOutput> {
     const user = await this.userRepository.getUserById(userId);
-    delete user['password'];
-    delete user['refreshToken'];
 
     return { ok: true, user };
   }
