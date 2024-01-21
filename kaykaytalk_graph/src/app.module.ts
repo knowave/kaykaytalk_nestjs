@@ -6,6 +6,8 @@ import { Context } from 'apollo-server-core';
 import { UserModule } from './user/user.module';
 import { MysqlModule } from './config/mysql/mysql.module';
 import GraphQLJSON from 'graphql-type-json';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -32,5 +34,6 @@ import GraphQLJSON from 'graphql-type-json';
     MysqlModule,
     UserModule,
   ],
+  providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }],
 })
 export class AppModule {}
