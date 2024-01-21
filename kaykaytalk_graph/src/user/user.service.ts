@@ -23,6 +23,10 @@ export class UserService {
     return { ok: true, user };
   }
 
+  async getUserByEmail(email: string): Promise<User> {
+    return await this.userRepository.getUserByEmail(email);
+  }
+
   async createUser({
     email,
     username,
