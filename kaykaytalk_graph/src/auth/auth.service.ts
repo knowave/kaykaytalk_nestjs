@@ -1,13 +1,19 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
 import { User } from 'src/user/entities/user.entity';
+import { UserRepository } from 'src/user/user.repository';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
+    private readonly userRepository: UserRepository,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -24,6 +30,35 @@ export class AuthService {
     });
 
     return accessToken;
+  }
+
+  async createRefreshToken(user: User) {
+    try {
+      const payload = {
+        type: 'refreshToken',
+        id: user.id,
+        username: user.username,
+      };
+
+      const token = this.jwtService.sign(payload, {
+        secret: process.env.JWT_SECRET,
+        expiresIn: '20700m',
+      });
+
+      const tokenVerify = await this.tokenValidate(token);
+      const tokenExp = new Date(tokenVerify['exp'] * 1000);
+
+      const refreshToken = CryptoJS.AES.encrypt(
+        JSON.stringify(token),
+        process.env.AES_KEY,
+      ).toString();
+
+      user.refreshToken = refreshToken;
+      await this.userRepository.insert(user);
+      return { refreshToken, tokenExp };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   async validateUser(email: string, hashedPassword: string) {
