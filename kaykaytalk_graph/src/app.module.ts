@@ -8,6 +8,7 @@ import { MysqlModule } from './config/mysql/mysql.module';
 import GraphQLJSON from 'graphql-type-json';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { MongoDbModule } from './mongo-db/mongo-db.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
     }),
     MysqlModule,
     UserModule,
+    MongoDbModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }],
 })
