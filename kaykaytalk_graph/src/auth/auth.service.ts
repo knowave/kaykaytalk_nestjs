@@ -123,4 +123,13 @@ export class AuthService {
       throw new InternalServerErrorException();
     }
   }
+
+  async removeRefreshToken(user: User) {
+    try {
+      user.refreshToken = null;
+      await this.userRepository.update(user);
+    } catch (err) {
+      throw new InternalServerErrorException(err);
+    }
+  }
 }
