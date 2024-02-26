@@ -26,4 +26,8 @@ export class UserRepository extends EntityRepository<User> {
 
     return user;
   }
+
+  async update(user: User) {
+    await this.update(user);
+  }
 }
