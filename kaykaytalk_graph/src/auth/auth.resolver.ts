@@ -18,4 +18,10 @@ export class AuthResolver {
 
     return { accessToken, refreshToken: refreshToken.refreshToken };
   }
+
+  @UseGuards(LocalAuthGuard)
+  @Mutation(() => true)
+  async logout(@CurrentUser() user) {
+    await this.authService.removeRefreshToken(user);
+  }
 }
