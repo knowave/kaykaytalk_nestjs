@@ -9,6 +9,7 @@ import GraphQLJSON from 'graphql-type-json';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { MongoDbModule } from './mongo-db/mongo-db.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { MongoDbModule } from './mongo-db/mongo-db.module';
     MysqlModule,
     UserModule,
     MongoDbModule,
+    ChatModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }],
 })
